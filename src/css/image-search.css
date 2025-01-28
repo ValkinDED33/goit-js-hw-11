@@ -46,7 +46,7 @@ button:hover {
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+  grid-template-columns: repeat(5, 1fr); /* 5 колонок */
   grid-auto-rows: auto;
   gap: 20px;
   padding: 20px;
@@ -73,13 +73,21 @@ button:hover {
 
 .info {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Відображає елементи в один рядок */
+  align-items: center;
+  gap: 15px; /* Відступи між елементами */
   padding: 10px;
   background-color: #fff;
+  border-top: 1px solid #eee; /* Лінія для відокремлення тексту від зображення */
 }
 
-.info span {
-  font-size: 12px;
+.info p {
+  margin: 0;
+  flex: 1; /* Дозволяє тексту розтягуватися вільно */
+  white-space: nowrap; /* Уникає переносу тексту */
+  overflow: hidden; /* Ховає текст, що не вміщується */
+  text-overflow: ellipsis; /* Додає "..." у випадку обрізання тексту */
+  font-size: 12px; /* Зменшений шрифт для інформації */
 }
 
 #loader {
@@ -107,15 +115,20 @@ button:hover {
   background-color: #0056b3;
 }
 
-.info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px; /* Додатковий відступ між текстовими елементами */
-}
-.info p {
-  margin: 0;
-  white-space: nowrap; /* Запобігає переносу тексту */
-  overflow: hidden; /* Ховає текст, якщо він не вміщається */
-  text-overflow: ellipsis; /* Додає три крапки для довгих текстів */
+/* Адаптація для малих екранів */
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr); /* 2 колонки на малих екранах */
+  }
+
+  .info {
+    flex-direction: column; /* Розташування елементів у стовпчик */
+    align-items: flex-start;
+    gap: 10px; /* Простір між рядками тексту */
+  }
+
+  .info p {
+    white-space: normal; /* Дозволяє перенос тексту на наступний рядок */
+    text-overflow: clip; /* Забирає "..." */
+  }
 }
