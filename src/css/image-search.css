@@ -106,3 +106,16 @@ button:hover {
 .load-more:hover {
   background-color: #0056b3;
 }
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px; /* Додатковий відступ між текстовими елементами */
+}
+.info p {
+  margin: 0;
+  white-space: nowrap; /* Запобігає переносу тексту */
+  overflow: hidden; /* Ховає текст, якщо він не вміщається */
+  text-overflow: ellipsis; /* Додає три крапки для довгих текстів */
+}
