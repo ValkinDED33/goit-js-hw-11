@@ -1,47 +1,61 @@
-import { fetchImages } from './js/pixabay-api';
-import { renderGallery } from './js/render-functions';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
+import { fetchImages } from './js/pixabay-api.js';
+import {
+  renderGallery,
+  clearGallery,
+  toggleLoader,
+} from './js/render-functions.js';
 
-const form = document.querySelector('#search-form');
-const gallery = document.querySelector('.gallery');
 let query = '';
 let page = 1;
 
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
+const form = document.querySelector('#search-form');
+const loadMoreBtn = document.querySelector('#load-more');
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
-  query = event.target.elements.searchQuery.value.trim();
+  query = document.querySelector('#search-input').value.trim();
+  if (!query) return;
 
-  if (!query) {
-    iziToast.error({
-      title: 'Error',
-      message: 'Please enter a valid search term!',
-    });
-    return;
-  }
+  clearGallery();
+  page = 1;
+  loadMoreBtn.classList.add('hidden');
+  toggleLoader(true);
 
   try {
     const data = await fetchImages(query, page);
+    toggleLoader(false);
+
     if (data.hits.length === 0) {
-      iziToast.warning({
-        title: 'No Results',
-        message: 'No images found. Try another query.',
-      });
+      alert('No images found. Try another query.');
       return;
     }
+
     renderGallery(data.hits);
-    lightbox.refresh();
+    loadMoreBtn.classList.remove('hidden');
   } catch (error) {
-    iziToast.error({
-      title: 'Error',
-      message: 'Something went wrong. Please try again later.',
-    });
+    console.error('Error fetching images:', error);
+    toggleLoader(false);
+    alert('Something went wrong. Please try again.');
+  }
+});
+
+loadMoreBtn.addEventListener('click', async () => {
+  page += 1;
+  toggleLoader(true);
+
+  try {
+    const data = await fetchImages(query, page);
+    toggleLoader(false);
+
+    renderGallery(data.hits);
+
+    if (page * 15 >= data.totalHits) {
+      loadMoreBtn.classList.add('hidden');
+      alert("We're sorry, but you've reached the end of search results.");
+    }
+  } catch (error) {
+    console.error('Error loading more images:', error);
+    toggleLoader(false);
+    alert('Something went wrong. Please try again.');
   }
 });
